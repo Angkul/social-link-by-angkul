@@ -32,5 +32,11 @@ Social Link by Angkul adds a customizable floating action button to your website
 
 == Changelog ==
 
+= 1.0.1 =
+* Fix SVG icons not displaying (wp_kses_post was lowercasing viewBox attribute)
+* Add multilingual support for Polylang and WPML
+* Add Settings link on Plugins page
+* Add License header and readme.txt
+
 = 1.0.0 =
 * Initial release
