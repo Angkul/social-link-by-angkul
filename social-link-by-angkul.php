@@ -55,6 +55,17 @@ function sla_register_multilingual_strings( $settings ) {
     }
 }
 
+// ── Auto-updater via GitHub releases (tag-based) ──────────────────────────────
+$sla_puc = SLA_DIR . 'lib/plugin-update-checker/plugin-update-checker.php';
+if ( file_exists( $sla_puc ) ) {
+    require_once $sla_puc;
+    YahnisElsts\PluginUpdateChecker\v5\PucFactory::buildUpdateChecker(
+        'https://github.com/Angkul/social-link-by-angkul/',
+        __FILE__,
+        'social-link-by-angkul'
+    );
+}
+
 require_once SLA_DIR . 'includes/settings.php';
 require_once SLA_DIR . 'includes/frontend.php';
 
