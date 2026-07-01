@@ -1,0 +1,29 @@
+name: Build Release ZIP
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Create plugin ZIP
+        run: |
+          mkdir -p social-link-by-angkul
+          rsync -av --exclude='.git' \
+                    --exclude='.github' \
+                    --exclude='.gitignore' \
+                    --exclude='desktop.ini' \
+                    --exclude='Thumbs.db' \
+                    --exclude='.DS_Store' \
+                    . social-link-by-angkul/
+          zip -r social-link-by-angkul.zip social-link-by-angkul/
+
+      - name: Upload ZIP to Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: social-link-by-angkul.zip
