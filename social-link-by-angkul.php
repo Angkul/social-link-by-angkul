@@ -2,7 +2,7 @@
 /**
  * Plugin Name:       Social Link by Angkul
  * Description:       Floating Action Button with expandable social/contact menu.
- * Version:           1.0.1
+ * Version:           1.0.2
  * Author:            Angkul
  * Author URI:        https://www.ehowme.com/
  * License:           GPL-2.0+
@@ -12,7 +12,7 @@
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 
-define( 'SLA_VERSION', '1.0.1' );
+define( 'SLA_VERSION', '1.0.2' );
 define( 'SLA_DIR',     plugin_dir_path( __FILE__ ) );
 define( 'SLA_URL',     plugin_dir_url( __FILE__ ) );
 
@@ -86,7 +86,8 @@ function sla_activate() {
         'color_start'  => '#0066FF',
         'color_end'    => '#002D73',
         'position'     => 'right',
-        'bottom'       => '24',
+        'bottom'       => 24,
+        'btn_radius'   => 999,
         'items'        => array(),
     );
     add_option( 'sla_settings', $defaults );

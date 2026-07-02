@@ -171,4 +171,7 @@
     .appt-fab{bottom:16px;right:16px;left:auto}
     .appt-fab.is-open .appt-fab__main{max-width:min(260px,calc(100vw - 32px))}
     .appt-fab__txt .t{font-size:14px}
-    .appt-fab__txt .s{font
+    .appt-fab__txt .s{font-size:11px}
+    /* ไม่ตั้ง overflow บน menu เพื่อให้เงาแสดงได้ปกติ */
+    .appt-fab__menu{padding:4px 6px 4px 0}
+}

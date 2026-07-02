@@ -120,4 +120,7 @@ function sla_render() {
 
 // ── Icon helper (pulls from shared icon data) ─────────────────────────────────
 function sla_icon( $type ) {
-  
+    $data = sla_icon_data();
+    if ( isset( $data[ $type ] ) ) return $data[ $type ]['svg'];
+    return $data['link']['svg'];
+}
