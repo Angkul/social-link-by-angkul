@@ -8,7 +8,8 @@
 }
 
 /* ── Main button ── */
-.appt-fab__main{
+/* .appt-fab prefix → specificity (0,2,0) beats Elementor kit (0,1,1) */
+.appt-fab .appt-fab__main{
     position:relative;
     display:flex;
     align-items:center;
@@ -17,18 +18,21 @@
     min-width:60px;
     max-width:60px;
     height:60px;
-    padding:0;
+    padding:0!important;
     color:#fff;
     border:none;
-    border-radius:999px;
     cursor:pointer;
     overflow:hidden;
+    font-family:inherit;
+    font-size:inherit;
+    font-weight:inherit;
+    line-height:normal;
     box-shadow:0 8px 24px rgba(0,45,115,.35),0 2px 6px rgba(0,45,115,.2);
     transition:max-width .35s cubic-bezier(.4,0,.2,1),
                box-shadow .3s ease,
                transform .2s ease;
 }
-.appt-fab__main:hover{
+.appt-fab .appt-fab__main:hover{
     box-shadow:0 12px 32px rgba(0,45,115,.45),0 4px 8px rgba(0,45,115,.25);
     transform:translateY(-2px)
 }
@@ -167,7 +171,4 @@
     .appt-fab{bottom:16px;right:16px;left:auto}
     .appt-fab.is-open .appt-fab__main{max-width:min(260px,calc(100vw - 32px))}
     .appt-fab__txt .t{font-size:14px}
-    .appt-fab__txt .s{font-size:11px}
-    /* ไม่ตั้ง overflow บน menu เพื่อให้เงาแสดงได้ปกติ */
-    .appt-fab__menu{padding:4px 6px 4px 0}
-}
+    .appt-fab__txt .s{font

@@ -27,6 +27,7 @@ function sla_render() {
     $ce           = isset( $s['color_end'] )    ? esc_attr( $s['color_end'] )    : '#002D73';
     $pos          = isset( $s['position'] )     ? $s['position']                 : 'right';
     $bottom       = isset( $s['bottom'] )       ? absint( $s['bottom'] )         : 24;
+    $radius       = isset( $s['btn_radius'] )   ? absint( $s['btn_radius'] )     : 999;
     $display_mode = isset( $s['display_mode'] ) ? $s['display_mode']             : 'parent';
     $items        = isset( $s['items'] )        ? $s['items']                    : array();
     $all_btn_icons = sla_btn_icon_data();
@@ -82,7 +83,7 @@ function sla_render() {
     <div class="appt-fab" id="apptFab" data-mode="parent" style="bottom:<?php echo (int) $bottom; ?>px;<?php echo esc_attr( $side ); ?>">
 
         <button class="appt-fab__main" id="apptFabToggle" aria-expanded="false"
-                style="background:<?php echo esc_attr( $grad ); ?>">
+                style="background:<?php echo esc_attr( $grad ); ?>;border-radius:<?php echo $radius; ?>px">
             <span class="appt-fab__ic">
                 <?php echo $bi_svg; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- hardcoded SVG data ?>
             </span>
@@ -119,7 +120,4 @@ function sla_render() {
 
 // ── Icon helper (pulls from shared icon data) ─────────────────────────────────
 function sla_icon( $type ) {
-    $data = sla_icon_data();
-    if ( isset( $data[ $type ] ) ) return $data[ $type ]['svg'];
-    return $data['link']['svg'];
-}
+  

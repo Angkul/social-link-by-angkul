@@ -67,7 +67,8 @@ function sla_save() {
         'color_start'  => sanitize_hex_color( wp_unslash( isset( $_POST['sla_color_start'] ) ? $_POST['sla_color_start'] : '' ) ),
         'color_end'    => sanitize_hex_color( wp_unslash( isset( $_POST['sla_color_end'] )   ? $_POST['sla_color_end']   : '' ) ),
         'position'     => in_array( $raw_position, array( 'right', 'left' ), true ) ? $raw_position : 'right',
-        'bottom'       => absint( isset( $_POST['sla_bottom'] ) ? $_POST['sla_bottom'] : 0 ),
+        'bottom'       => absint( isset( $_POST['sla_bottom'] )     ? $_POST['sla_bottom']     : 0 ),
+        'btn_radius'   => absint( isset( $_POST['sla_btn_radius'] ) ? $_POST['sla_btn_radius'] : 999 ),
         'display_mode' => in_array( $raw_mode, array( 'parent', 'direct' ), true ) ? $raw_mode : 'parent',
         'items'        => $items,
     ) );
@@ -132,6 +133,7 @@ function sla_settings_page() {
     $ce        = isset( $s['color_end'] )    ? $s['color_end']    : '#002D73';
     $pos       = isset( $s['position'] )     ? $s['position']     : 'right';
     $bottom       = isset( $s['bottom'] )       ? $s['bottom']       : 24;
+    $radius       = isset( $s['btn_radius'] )   ? absint( $s['btn_radius'] ) : 999;
     $display_mode = isset( $s['display_mode'] ) ? $s['display_mode'] : 'parent';
     $items        = isset( $s['items'] )        ? $s['items']        : array();
     $icon_data = sla_icon_data();
@@ -330,6 +332,10 @@ function sla_settings_page() {
                     <div class="sla-field" style="max-width:110px">
                         <label>Bottom (px)</label>
                         <input type="number" name="sla_bottom" value="<?php echo esc_attr($bottom); ?>" min="0" max="500">
+                    </div>
+                    <div class="sla-field" style="max-width:110px">
+                        <label>Radius (px)</label>
+                        <input type="number" name="sla_btn_radius" value="<?php echo esc_attr($radius); ?>" min="0" max="999">
                     </div>
                     <div class="sla-field">
                         <label>Display Mode</label>
@@ -591,20 +597,4 @@ function sla_settings_page() {
                                 '<span class="sla-toggle-track"></span>'+
                                 '<span class="sla-toggle-thumb"></span>'+
                             '</label>'+
-                            '<button type="button" class="sla-remove-row" title="ลบ"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>'+
-                        '</div>'+
-                    '</div>');
-                }
-
-                $('#sla-add-row').on('click', function(){
-                    var $card = buildCard();
-                    list.append($card);
-                    reindex();
-                    $card.find('input[type=text]').first().focus();
-                });
-            });
-            </script>
-        </form>
-    </div>
-    <?php
-}
+                            '<button type="button" class="sla-remove-row" title="ลบ"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1=
