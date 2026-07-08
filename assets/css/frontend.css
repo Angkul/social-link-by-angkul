@@ -51,7 +51,7 @@
 /* ── Text stack (hidden by default) ── */
 .appt-fab__txt{
     display:flex;flex-direction:column;align-items:flex-start;gap:2px;
-    padding-left:56px;padding-right:56px;
+    padding-left:24px;padding-right:56px;
     opacity:0;white-space:nowrap;
     transition:opacity .25s ease .1s;
     pointer-events:none
