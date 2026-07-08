@@ -3,7 +3,7 @@ Contributors: angkul
 Tags: social, social icon, floating button, chat button
 Requires at least: 6.0
 Tested up to: 7.0
-Stable tag: 1.0.0
+Stable tag: 1.0.3
 Requires PHP: 7.4
 License: GPL-2.0+
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -22,21 +22,58 @@ Social Link by Angkul adds a customizable floating action button to your website
 * Show/hide each item on Desktop or Mobile independently
 * Up to 8 menu items, drag to reorder
 * Position: left or right, adjustable bottom offset
+* Adjustable border radius for the main button
 * Smooth entrance animations
+* Compatible with Polylang and WPML
 
 == Installation ==
 
 1. Upload the `social-link-by-angkul` folder to `/wp-content/plugins/`
 2. Activate the plugin through the **Plugins** menu in WordPress
-3. Go to **Settings → Social Link** to configure
+3. Go to **Settings → Social Link** to configure your button and social links
+
+== Frequently Asked Questions ==
+
+= How do I add social links? =
+Go to Settings → Social Link, scroll to the Social Links section, click "Add Item", choose an icon, enter a label and URL, then save.
+
+= Can I show different links on mobile and desktop? =
+Yes — each item has a toggle for Desktop and Mobile visibility independently.
+
+= Does it work with page builders like Elementor? =
+Yes. The plugin uses high-specificity CSS to prevent Elementor from overriding the button styles.
+
+= Can I change the button color? =
+Yes. You can set a two-color gradient for the main button in Settings → Social Link → Button Gradient.
+
+= Does it support multilingual sites? =
+Yes. The plugin integrates with Polylang and WPML for translating the button title, subtitle, and item labels.
+
+= What is Direct mode? =
+In Direct mode, all social links are always visible on the page without needing to click the FAB button. Useful for sidebars or fixed sections.
+
+== Screenshots ==
+
+1. Main FAB button in collapsed state
+2. FAB button expanded showing social links
+3. Admin settings panel
 
 == Changelog ==
+
+= 1.0.3 =
+* Fix text padding on expanded FAB button
+
+= 1.0.2 =
+* Fix truncated plugin files causing PHP errors
+* Add border-radius setting for main button
+* Fix CSS specificity conflict with Elementor kit styles
+* Add btn_radius to activation defaults
 
 = 1.0.1 =
 * Fix SVG icons not displaying (wp_kses_post was lowercasing viewBox attribute)
 * Add multilingual support for Polylang and WPML
 * Add Settings link on Plugins page
-* Add License header and readme.txt
+* Add GitHub-based auto-update via Plugin Update Checker
 
 = 1.0.0 =
 * Initial release
