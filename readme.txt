@@ -3,7 +3,7 @@ Contributors: angkul
 Tags: social, social icon, floating button, chat button
 Requires at least: 6.0
 Tested up to: 7.0
-Stable tag: 1.0.3
+Stable tag: 1.0.7
 Requires PHP: 7.4
 License: GPL-2.0+
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -59,6 +59,26 @@ In Direct mode, all social links are always visible on the page without needing 
 3. Admin settings panel
 
 == Changelog ==
+
+= 1.0.7 =
+* Add show/hide per device (Desktop/Mobile) for the Main Button
+* Main button now expands to match the menu width (capped at 280px)
+* Smoother, snappier hover response on menu items
+* Softer, more premium shadows on the button and menu items
+* Fix hover transition stutter caused by stagger delays
+* Fix stale width measurement before webfonts finished loading
+* Entrance stagger now covers all 8 menu items
+* Use file modification time for cache busting of CSS/JS
+
+= 1.0.6 =
+* Update plugin icon and banner images
+
+= 1.0.5 =
+* Update plugin icon and banner images
+
+= 1.0.4 =
+* Add plugin icon and banner to the update screen
+* Add FAQ, screenshots, and full changelog to readme
 
 = 1.0.3 =
 * Fix text padding on expanded FAB button

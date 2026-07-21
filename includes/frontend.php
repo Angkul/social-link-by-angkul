@@ -12,8 +12,16 @@ function sla_enqueue() {
     }
     if ( ! $has ) return;
 
-    wp_enqueue_style(  'sla-style',  SLA_URL . 'assets/css/frontend.css', array(), SLA_VERSION );
-    wp_enqueue_script( 'sla-script', SLA_URL . 'assets/js/frontend.js',   array(), SLA_VERSION, true );
+    // filemtime() as the cache-busting version instead of the static SLA_VERSION —
+    // otherwise the browser (and some host-level caches) can keep serving a stale
+    // copy of these files across edits/deploys that don't bump the plugin version.
+    $css_path = SLA_DIR . 'assets/css/frontend.css';
+    $js_path  = SLA_DIR . 'assets/js/frontend.js';
+    $css_ver  = file_exists( $css_path ) ? filemtime( $css_path ) : SLA_VERSION;
+    $js_ver   = file_exists( $js_path )  ? filemtime( $js_path )  : SLA_VERSION;
+
+    wp_enqueue_style(  'sla-style',  SLA_URL . 'assets/css/frontend.css', array(), $css_ver );
+    wp_enqueue_script( 'sla-script', SLA_URL . 'assets/js/frontend.js',   array(), $js_ver, true );
 }
 
 // ── Render ────────────────────────────────────────────────────────────────────
@@ -29,6 +37,8 @@ function sla_render() {
     $bottom       = isset( $s['bottom'] )       ? absint( $s['bottom'] )         : 24;
     $radius       = isset( $s['btn_radius'] )   ? absint( $s['btn_radius'] )     : 999;
     $display_mode = isset( $s['display_mode'] ) ? $s['display_mode']             : 'parent';
+    $main_show_desktop = isset( $s['main_show_desktop'] ) ? (int) $s['main_show_desktop'] : 1;
+    $main_show_mobile  = isset( $s['main_show_mobile'] )  ? (int) $s['main_show_mobile']  : 1;
     $items        = isset( $s['items'] )        ? $s['items']                    : array();
     $all_btn_icons = sla_btn_icon_data();
     $bi_svg       = isset( $all_btn_icons[$btn_icon] ) ? $all_btn_icons[$btn_icon]['svg'] : sla_icon('calendar');
@@ -40,6 +50,10 @@ function sla_render() {
 
     $side = $pos === 'left' ? 'left:24px;right:auto' : 'right:24px';
     $grad = "linear-gradient(135deg,{$cs},{$ce})";
+
+    $main_vis_class = '';
+    if ( ! $main_show_desktop ) $main_vis_class .= ' sla-hide-desktop';
+    if ( ! $main_show_mobile )  $main_vis_class .= ' sla-hide-mobile';
 
     // ── Build shared item markup ───────────────────────────────────────────────
     $all_icon_data = sla_icon_data();
@@ -80,7 +94,7 @@ function sla_render() {
 
     // ── FAB mode (default) ────────────────────────────────────────────────────
     if ( $display_mode !== 'direct' ) : ?>
-    <div class="appt-fab" id="apptFab" data-mode="parent" style="bottom:<?php echo (int) $bottom; ?>px;<?php echo esc_attr( $side ); ?>">
+    <div class="appt-fab<?php echo esc_attr( $main_vis_class ); ?>" id="apptFab" data-mode="parent" style="bottom:<?php echo (int) $bottom; ?>px;<?php echo esc_attr( $side ); ?>">
 
         <button class="appt-fab__main" id="apptFabToggle" aria-expanded="false"
                 style="background:<?php echo esc_attr( $grad ); ?>;border-radius:<?php echo $radius; ?>px">
@@ -108,7 +122,7 @@ function sla_render() {
     <?php
     // ── Direct mode ───────────────────────────────────────────────────────────
     else : ?>
-    <div class="appt-fab appt-fab--direct" id="apptFab" data-mode="direct" style="bottom:<?php echo (int) $bottom; ?>px;<?php echo esc_attr( $side ); ?>">
+    <div class="appt-fab appt-fab--direct<?php echo esc_attr( $main_vis_class ); ?>" id="apptFab" data-mode="direct" style="bottom:<?php echo (int) $bottom; ?>px;<?php echo esc_attr( $side ); ?>">
 
         <div class="appt-fab__menu">
             <?php echo $items_html; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- pre-escaped buffer ?>

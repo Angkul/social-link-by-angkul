@@ -23,6 +23,7 @@ jobs:
                     --exclude='desktop.ini' \
                     --exclude='Thumbs.db' \
                     --exclude='.DS_Store' \
+                    --exclude='social-link-by-angkul' \
                     . social-link-by-angkul/
           zip -r social-link-by-angkul.zip social-link-by-angkul/
 

@@ -61,16 +61,18 @@ function sla_save() {
     $raw_mode     = sanitize_key( wp_unslash( isset( $_POST['sla_display_mode'] ) ? $_POST['sla_display_mode'] : 'parent' ) );
 
     update_option( 'sla_settings', array(
-        'btn_title'    => sanitize_text_field( wp_unslash( isset( $_POST['sla_btn_title'] )    ? $_POST['sla_btn_title']    : '' ) ),
-        'btn_subtitle' => sanitize_text_field( wp_unslash( isset( $_POST['sla_btn_subtitle'] ) ? $_POST['sla_btn_subtitle'] : '' ) ),
-        'btn_icon'     => sanitize_key( wp_unslash( isset( $_POST['sla_btn_icon'] )     ? $_POST['sla_btn_icon']     : '' ) ),
-        'color_start'  => sanitize_hex_color( wp_unslash( isset( $_POST['sla_color_start'] ) ? $_POST['sla_color_start'] : '' ) ),
-        'color_end'    => sanitize_hex_color( wp_unslash( isset( $_POST['sla_color_end'] )   ? $_POST['sla_color_end']   : '' ) ),
-        'position'     => in_array( $raw_position, array( 'right', 'left' ), true ) ? $raw_position : 'right',
-        'bottom'       => absint( isset( $_POST['sla_bottom'] )     ? $_POST['sla_bottom']     : 0 ),
-        'btn_radius'   => absint( isset( $_POST['sla_btn_radius'] ) ? $_POST['sla_btn_radius'] : 999 ),
-        'display_mode' => in_array( $raw_mode, array( 'parent', 'direct' ), true ) ? $raw_mode : 'parent',
-        'items'        => $items,
+        'btn_title'         => sanitize_text_field( wp_unslash( isset( $_POST['sla_btn_title'] )    ? $_POST['sla_btn_title']    : '' ) ),
+        'btn_subtitle'      => sanitize_text_field( wp_unslash( isset( $_POST['sla_btn_subtitle'] ) ? $_POST['sla_btn_subtitle'] : '' ) ),
+        'btn_icon'          => sanitize_key( wp_unslash( isset( $_POST['sla_btn_icon'] )     ? $_POST['sla_btn_icon']     : '' ) ),
+        'color_start'       => sanitize_hex_color( wp_unslash( isset( $_POST['sla_color_start'] ) ? $_POST['sla_color_start'] : '' ) ),
+        'color_end'         => sanitize_hex_color( wp_unslash( isset( $_POST['sla_color_end'] )   ? $_POST['sla_color_end']   : '' ) ),
+        'position'          => in_array( $raw_position, array( 'right', 'left' ), true ) ? $raw_position : 'right',
+        'bottom'            => absint( isset( $_POST['sla_bottom'] )     ? $_POST['sla_bottom']     : 0 ),
+        'btn_radius'        => absint( isset( $_POST['sla_btn_radius'] ) ? $_POST['sla_btn_radius'] : 999 ),
+        'display_mode'      => in_array( $raw_mode, array( 'parent', 'direct' ), true ) ? $raw_mode : 'parent',
+        'main_show_desktop' => isset( $_POST['sla_main_show_desktop'] ) ? 1 : 0,
+        'main_show_mobile'  => isset( $_POST['sla_main_show_mobile'] )  ? 1 : 0,
+        'items'             => $items,
     ) );
 
     sla_register_multilingual_strings( get_option( 'sla_settings', array() ) );
@@ -135,6 +137,8 @@ function sla_settings_page() {
     $bottom       = isset( $s['bottom'] )       ? $s['bottom']       : 24;
     $radius       = isset( $s['btn_radius'] )   ? absint( $s['btn_radius'] ) : 999;
     $display_mode = isset( $s['display_mode'] ) ? $s['display_mode'] : 'parent';
+    $main_show_desktop = isset( $s['main_show_desktop'] ) ? (int) $s['main_show_desktop'] : 1;
+    $main_show_mobile  = isset( $s['main_show_mobile'] )  ? (int) $s['main_show_mobile']  : 1;
     $items        = isset( $s['items'] )        ? $s['items']        : array();
     $icon_data = sla_icon_data();
     $btn_icons = sla_btn_icon_data();
@@ -351,6 +355,19 @@ function sla_settings_page() {
                         </div>
                         <span style="font-size:11px;color:#9ca3af">FAB = click to expand · Direct = always visible</span>
                     </div>
+                    <div class="sla-field">
+                        <label>Show On</label>
+                        <div class="sla-dev-btns" style="margin-left:0">
+                            <label class="sla-dev-btn <?php echo $main_show_desktop ? 'active' : ''; ?>" title="Desktop">
+                                <input type="checkbox" name="sla_main_show_desktop" value="1" <?php checked($main_show_desktop,1); ?>>
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+                            </label>
+                            <label class="sla-dev-btn <?php echo $main_show_mobile ? 'active' : ''; ?>" title="Mobile">
+                                <input type="checkbox" name="sla_main_show_mobile" value="1" <?php checked($main_show_mobile,1); ?>>
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>
+                            </label>
+                        </div>
+                    </div>
                 </div>
 
                 <!-- Main icon picker -->
@@ -549,7 +566,7 @@ function sla_settings_page() {
                     $(this).closest('.sla-item-card').remove();
                     reindex();
                 });
-                list.on('change', '.sla-dev-btn input[type=checkbox]', function(){
+                $(document).on('change', '.sla-dev-btn input[type=checkbox]', function(){
                     $(this).closest('.sla-dev-btn').toggleClass('active', $(this).is(':checked'));
                 });
 

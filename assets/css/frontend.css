@@ -13,10 +13,13 @@
     position:relative;
     display:flex;
     align-items:center;
+    justify-content:space-between;
     gap:12px;
-    width:fit-content;
-    min-width:60px;
-    max-width:60px;
+    /* Explicit 60px, not fit-content — width is now the animated property
+       (see transition below), and a browser can't smoothly interpolate
+       between the fit-content keyword and a pixel length, which is what was
+       causing the open animation to snap instantly instead of easing. */
+    width:60px;
     height:60px;
     padding:0!important;
     color:#fff;
@@ -27,13 +30,20 @@
     font-size:inherit;
     font-weight:inherit;
     line-height:normal;
-    box-shadow:0 8px 24px rgba(0,45,115,.35),0 2px 6px rgba(0,45,115,.2);
-    transition:max-width .35s cubic-bezier(.4,0,.2,1),
-               box-shadow .3s ease,
+    /* filter:drop-shadow instead of box-shadow — drop-shadow isn't clipped by this
+       element's own overflow:hidden and is composited on the GPU, so animating it
+       on hover doesn't force a full repaint every frame like box-shadow does. */
+    filter:drop-shadow(0 6px 20px rgba(0,45,115,.16)) drop-shadow(0 2px 5px rgba(0,45,115,.08));
+    will-change:transform;
+    /* Animate width (not max-width) so the open state below can force an
+       exact width instead of just capping it — needed to make this box match
+       .appt-fab__menu's width rather than only fitting its own text. */
+    transition:width .35s cubic-bezier(.4,0,.2,1),
+               filter .3s ease,
                transform .2s ease;
 }
 .appt-fab .appt-fab__main:hover{
-    box-shadow:0 12px 32px rgba(0,45,115,.45),0 4px 8px rgba(0,45,115,.25);
+    filter:drop-shadow(0 10px 28px rgba(0,45,115,.20)) drop-shadow(0 3px 7px rgba(0,45,115,.10));
     transform:translateY(-2px)
 }
 
@@ -49,9 +59,15 @@
 .appt-fab__ic svg{width:100%;height:100%}
 
 /* ── Text stack (hidden by default) ── */
+/* No more padding-right reserved for the close icon — .appt-fab__close is now
+   a real flex sibling instead of being absolutely positioned, so
+   justify-content:space-between on .appt-fab__main pins text to the left edge
+   and the close icon to the right edge naturally, and the button's fit-content
+   width grows/shrinks with the text instead of always jumping to a fixed size. */
 .appt-fab__txt{
     display:flex;flex-direction:column;align-items:flex-start;gap:2px;
-    padding-left:24px;padding-right:56px;
+    padding-left:24px;
+    flex-shrink:0;
     opacity:0;white-space:nowrap;
     transition:opacity .25s ease .1s;
     pointer-events:none
@@ -61,11 +77,12 @@
 
 /* ── Close icon (hidden by default) ── */
 .appt-fab__close{
-    position:absolute;right:18px;top:50%;
-    transform:translateY(-50%) rotate(-90deg);
     width:22px;height:22px;
+    margin-right:18px;
+    flex-shrink:0;
     display:flex;align-items:center;justify-content:center;
     opacity:0;
+    transform:rotate(-90deg);
     transition:opacity .2s ease,transform .3s ease
 }
 .appt-fab__close svg{width:100%;height:100%}
@@ -85,6 +102,7 @@
 
 /* ── Menu item ── */
 .appt-fab__item{
+    position:relative;
     display:flex;align-items:center;gap:10px;
     max-width:100%;
     padding:10px 18px 10px 12px;
@@ -94,15 +112,42 @@
     text-decoration:none;
     font-size:14px;font-weight:600;
     border-radius:999px;
-    box-shadow:0 4px 12px rgba(0,45,115,.18),0 1px 3px rgba(0,0,0,.08);
+    box-shadow:0 3px 10px rgba(0,45,115,.09),0 1px 2px rgba(0,0,0,.04);
     opacity:0;
     transform:translateX(20px);
-    transition:opacity .3s ease,transform .3s ease,box-shadow .2s ease,background .2s ease
+    will-change:transform;
+    /* Short durations here = snappy hover in AND out. The slower entrance
+       stagger is handled by the slaItemIn keyframe animation, not by these
+       transitions, so hover speed and entrance speed are fully decoupled. */
+    transition:opacity .3s ease,transform .12s ease-out,background .12s ease-out
+}
+/* Hover shadow is a separate layer that crossfades in via opacity instead of
+   animating box-shadow directly — box-shadow isn't GPU-composited, so easing
+   between two shadow values forces a full repaint on every frame and is what
+   caused the hover stutter. */
+.appt-fab__item::after{
+    content:"";
+    position:absolute;
+    inset:0;
+    border-radius:inherit;
+    box-shadow:0 6px 18px rgba(0,45,115,.14);
+    opacity:0;
+    transition:opacity .12s ease-out;
+    pointer-events:none;
 }
 .appt-fab__item:hover{
     background:#F0F6FF;
-    box-shadow:0 6px 16px rgba(0,45,115,.25);
-    transform:translateX(-2px) !important
+}
+/* Higher specificity than the open/ready-state transform rules below (3 classes)
+   so hover naturally wins without !important — avoids the transform snapping
+   discontinuously mid entrance-animation. Covers both FAB mode (.is-open) and
+   direct mode (.sla-ready), since direct-mode items never get .is-open. */
+.appt-fab.is-open .appt-fab__item:hover,
+.appt-fab--direct.sla-ready .appt-fab__item:hover{
+    transform:translateX(-2px);
+}
+.appt-fab__item:hover::after{
+    opacity:1;
 }
 .appt-fab__item .ic{
     width:32px;height:32px;flex-shrink:0;
@@ -114,19 +159,42 @@
 .appt-fab__item .lbl{line-height:1}
 
 /* ── Open state ── */
-.appt-fab.is-open .appt-fab__main{max-width:280px}
+/* --sla-main-w is set by frontend.js from .appt-fab__menu's measured width
+   (already capped at 280px there), so the button matches the menu's width
+   instead of just fitting its own title/subtitle text. max-width is set to
+   the same value so it can't clamp width down below the target. */
+.appt-fab.is-open .appt-fab__main{width:var(--sla-main-w, 280px);max-width:var(--sla-main-w, 280px)}
 .appt-fab.is-open .appt-fab__ic{opacity:0;transform:translate(-50%,-50%) scale(.5)}
 .appt-fab.is-open .appt-fab__txt{opacity:1}
-.appt-fab.is-open .appt-fab__close{opacity:1;transform:translateY(-50%) rotate(0deg)}
+.appt-fab.is-open .appt-fab__close{opacity:1;transform:rotate(0deg)}
 .appt-fab.is-open .appt-fab__menu{opacity:1;transform:translateY(0) scale(1);pointer-events:auto}
-.appt-fab.is-open .appt-fab__item{opacity:1;transform:translateX(0)}
+/* Entrance is a keyframe animation, NOT a transition. With the old
+   transition-delay stagger, the delay stayed attached to the item the whole
+   time the menu was open, so every hover in/out inherited it — items felt
+   laggy and uneven. animation-delay only affects this one-shot entrance;
+   fill-mode:backwards keeps the item hidden during its delay. Once it ends,
+   the static rule below holds the final state and hover transitions run with
+   zero delay in both directions. */
+.appt-fab.is-open .appt-fab__item{
+    opacity:1;transform:translateX(0);
+    animation:slaItemIn .3s ease backwards;
+}
 
-/* stagger */
-.appt-fab.is-open .appt-fab__item:nth-child(1){transition-delay:.05s}
-.appt-fab.is-open .appt-fab__item:nth-child(2){transition-delay:.10s}
-.appt-fab.is-open .appt-fab__item:nth-child(3){transition-delay:.15s}
-.appt-fab.is-open .appt-fab__item:nth-child(4){transition-delay:.20s}
-.appt-fab.is-open .appt-fab__item:nth-child(5){transition-delay:.25s}
+/* stagger (entrance only) — covers all 8 possible items (admin allows max 8);
+   without delays for 6-8 those items would pop in before earlier ones */
+.appt-fab.is-open .appt-fab__item:nth-child(1){animation-delay:.05s}
+.appt-fab.is-open .appt-fab__item:nth-child(2){animation-delay:.10s}
+.appt-fab.is-open .appt-fab__item:nth-child(3){animation-delay:.15s}
+.appt-fab.is-open .appt-fab__item:nth-child(4){animation-delay:.20s}
+.appt-fab.is-open .appt-fab__item:nth-child(5){animation-delay:.25s}
+.appt-fab.is-open .appt-fab__item:nth-child(6){animation-delay:.30s}
+.appt-fab.is-open .appt-fab__item:nth-child(7){animation-delay:.35s}
+.appt-fab.is-open .appt-fab__item:nth-child(8){animation-delay:.40s}
+
+@keyframes slaItemIn{
+    from{opacity:0;transform:translateX(20px)}
+    to{opacity:1;transform:translateX(0)}
+}
 
 /* ── Device visibility ───────────────────────────────────────────────────── */
 @media(min-width:768px){.sla-hide-desktop{display:none!important}}
@@ -155,21 +223,28 @@
     opacity:0;
     transform:translateX(20px)
 }
+/* Same animation-based entrance as FAB mode — keeps hover delay-free. */
 .appt-fab--direct.sla-ready .appt-fab__item{
     opacity:1;
-    transform:translateX(0)
+    transform:translateX(0);
+    animation:slaItemIn .3s ease backwards;
 }
-.appt-fab--direct.sla-ready .appt-fab__item:nth-child(1){transition-delay:.05s}
-.appt-fab--direct.sla-ready .appt-fab__item:nth-child(2){transition-delay:.10s}
-.appt-fab--direct.sla-ready .appt-fab__item:nth-child(3){transition-delay:.15s}
-.appt-fab--direct.sla-ready .appt-fab__item:nth-child(4){transition-delay:.20s}
-.appt-fab--direct.sla-ready .appt-fab__item:nth-child(5){transition-delay:.25s}
-.appt-fab--direct.sla-ready .appt-fab__item:nth-child(6){transition-delay:.30s}
+.appt-fab--direct.sla-ready .appt-fab__item:nth-child(1){animation-delay:.05s}
+.appt-fab--direct.sla-ready .appt-fab__item:nth-child(2){animation-delay:.10s}
+.appt-fab--direct.sla-ready .appt-fab__item:nth-child(3){animation-delay:.15s}
+.appt-fab--direct.sla-ready .appt-fab__item:nth-child(4){animation-delay:.20s}
+.appt-fab--direct.sla-ready .appt-fab__item:nth-child(5){animation-delay:.25s}
+.appt-fab--direct.sla-ready .appt-fab__item:nth-child(6){animation-delay:.30s}
+.appt-fab--direct.sla-ready .appt-fab__item:nth-child(7){animation-delay:.35s}
+.appt-fab--direct.sla-ready .appt-fab__item:nth-child(8){animation-delay:.40s}
 
 /* ── Mobile ── */
 @media(max-width:480px){
     .appt-fab{bottom:16px;right:16px;left:auto}
-    .appt-fab.is-open .appt-fab__main{max-width:min(260px,calc(100vw - 32px))}
+    .appt-fab.is-open .appt-fab__main{
+        width:min(var(--sla-main-w, 260px),260px,calc(100vw - 32px));
+        max-width:min(var(--sla-main-w, 260px),260px,calc(100vw - 32px));
+    }
     .appt-fab__txt .t{font-size:14px}
     .appt-fab__txt .s{font-size:11px}
     /* ไม่ตั้ง overflow บน menu เพื่อให้เงาแสดงได้ปกติ */
