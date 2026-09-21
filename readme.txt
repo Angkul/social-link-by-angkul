@@ -3,7 +3,7 @@ Contributors: angkul
 Tags: social, social icon, floating button, chat button
 Requires at least: 6.0
 Tested up to: 7.0.2
-Stable tag: 1.0.8
+Stable tag: 1.0.9
 Requires PHP: 7.4
 License: GPL-2.0+
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -59,6 +59,9 @@ In Direct mode, all social links are always visible on the page without needing 
 3. Admin settings panel
 
 == Changelog ==
+
+= 1.0.9 =
+* Fix plugin icon showing incomplete on the Updates page (cache-bust icon/banner URLs)
 
 = 1.0.8 =
 * Fix "not tested with your current version of WordPress" warning in the update popup

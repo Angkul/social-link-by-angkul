@@ -2,7 +2,7 @@
 /**
  * Plugin Name:       Social Link by Angkul
  * Description:       Floating Action Button with expandable social/contact menu.
- * Version:           1.0.8
+ * Version:           1.0.9
  * Author:            Angkul
  * Author URI:        https://www.ehowme.com/
  * License:           GPL-2.0+
@@ -12,7 +12,7 @@
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 
-define( 'SLA_VERSION', '1.0.8' );
+define( 'SLA_VERSION', '1.0.9' );
 define( 'SLA_DIR',     plugin_dir_path( __FILE__ ) );
 define( 'SLA_URL',     plugin_dir_url( __FILE__ ) );
 
@@ -99,13 +99,15 @@ function sla_activate() {
 add_filter( 'puc_request_info_result-social-link-by-angkul', 'sla_plugin_icons' );
 function sla_plugin_icons( $info ) {
     if ( $info ) {
+        // ?v= cache-buster — some browsers cached a corrupted copy of these
+        // images served before v1.0.6; a new URL forces a fresh download.
         $info->icons = array(
-            '1x' => SLA_URL . 'assets/icon-128x128.png',
-            '2x' => SLA_URL . 'assets/icon-256x256.png',
+            '1x' => SLA_URL . 'assets/icon-128x128.png?v=' . SLA_VERSION,
+            '2x' => SLA_URL . 'assets/icon-256x256.png?v=' . SLA_VERSION,
         );
         $info->banners = array(
-            'low'  => SLA_URL . 'assets/banner-772x250.png',
-            'high' => SLA_URL . 'assets/banner-1544x500.png',
+            'low'  => SLA_URL . 'assets/banner-772x250.png?v=' . SLA_VERSION,
+            'high' => SLA_URL . 'assets/banner-1544x500.png?v=' . SLA_VERSION,
         );
         // Mark as tested with the WP version of the site it runs on, so the
         // "not tested with your current version of WordPress" warning never
