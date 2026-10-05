@@ -3,7 +3,7 @@ Contributors: angkul
 Tags: social, social icon, floating button, chat button
 Requires at least: 6.0
 Tested up to: 7.0.2
-Stable tag: 1.0.9
+Stable tag: 1.1.0
 Requires PHP: 7.4
 License: GPL-2.0+
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -17,7 +17,7 @@ Social Link by Angkul adds a customizable floating action button to your website
 **Features**
 
 * FAB mode (click to expand) or Direct mode (always visible)
-* Supports Phone, WhatsApp, LINE, Facebook, Messenger, Telegram, Instagram, TikTok, X (Twitter), Email, Map, Calendar, Discord, WeChat, YouTube, LinkedIn, VK, and Link
+* Supports Phone, WhatsApp, LINE, Facebook, Messenger, Telegram, Instagram, TikTok, X (Twitter), Email, Map, Calendar, Discord, WeChat, YouTube, LinkedIn, VK, Fastwork, and Link
 * Per-item background color (brand color, custom, or gradient)
 * Show/hide each item on Desktop or Mobile independently
 * Up to 8 menu items, drag to reorder
@@ -59,6 +59,9 @@ In Direct mode, all social links are always visible on the page without needing 
 3. Admin settings panel
 
 == Changelog ==
+
+= 1.1.0 =
+* Add Fastwork icon (official brand color #0057C7) for menu items and the main button
 
 = 1.0.9 =
 * Fix plugin icon showing incomplete on the Updates page (cache-bust icon/banner URLs)
