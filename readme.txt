@@ -62,6 +62,7 @@ In Direct mode, all social links are always visible on the page without needing 
 
 = 1.1.1 =
 * Add Shopee and Lazada icons for menu items and the main button
+* Fix corrupted 256px plugin icon that showed incomplete on the Updates page
 
 = 1.1.0 =
 * Add Fastwork icon (official brand color #0057C7) for menu items and the main button
